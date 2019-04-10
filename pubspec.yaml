@@ -11,11 +11,11 @@ dependencies:
   local_auth: ^0.4.0+1
   cupertino_icons: ^0.1.2
 
-  flutter_icon:
-    android: true
-    ios: true
-    image_path_android: "/lib/assets/appicon-Android"
-    image_path_ios: "/lib/assets/appIcon-ios"
+flutter_icon:
+  android: true
+  ios: true
+  image_path_android: "/lib/assets/appicon-Android/"
+  image_path_ios: "/lib/assets/appIcon-ios/"
 
 dev_dependencies:
   flutter_test:

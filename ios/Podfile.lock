@@ -1,11 +1,17 @@
 PODS:
+  - EthereumKit (0.1.2)
   - Flutter (1.0.0)
   - local_auth (0.0.1):
     - Flutter
 
 DEPENDENCIES:
+  - EthereumKit
   - Flutter (from `.symlinks/flutter/ios`)
   - local_auth (from `.symlinks/plugins/local_auth/ios`)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - EthereumKit
 
 EXTERNAL SOURCES:
   Flutter:
@@ -14,9 +20,10 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/local_auth/ios"
 
 SPEC CHECKSUMS:
+  EthereumKit: 04c37bd4d760f70574ecc91af412464dd3947234
   Flutter: 9d0fac939486c9aba2809b7982dfdbb47a7b0296
   local_auth: dca7d49d2228a53db258478ee98ee19402ff0c49
 
-PODFILE CHECKSUM: ebd43b443038e611b86ede96e613bd6033c49497
+PODFILE CHECKSUM: 756561629ed8f301051fd4214fd91d544a6b444a
 
 COCOAPODS: 1.6.0.beta.1

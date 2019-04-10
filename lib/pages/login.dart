@@ -12,6 +12,8 @@ class AuthentificationView extends StatefulWidget {
   @override _AuthState createState() => _AuthState();
 }
 
+const authChannel = const MethodChannel('com.b1.blockchain/register');
+
 class _AuthState extends State<AuthentificationView> {
   @override Widget build(BuildContext context) {
     return new CupertinoPageScaffold(child: new SafeArea(
@@ -67,13 +69,13 @@ class _AuthState extends State<AuthentificationView> {
           localizedReason: "Let's get you logged in.",
           useErrorDialogs: true,
           stickyAuth: true);
+      final Map<String, bool> status = await authChannel.invokeMapMethod('register', <String, dynamic>{"authUser" : true});
+      print("${status.keys} | ${status.values}");
     } on PlatformException catch (e) {
       print("${e.message}");
     }
-    setState(() {
+    setState(() async {
       signIn = authenticated ? true : false;
-      if (signIn){print("youre in");}
-
     });
   }
 }

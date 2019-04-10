@@ -9,6 +9,100 @@
 import UIKit
 import AVFoundation
 
+class CameraViewFactory: NSObject, FlutterPlatformViewFactory {
+    
+    public var _uiCameraHandle: UICameraView
+    
+    override init() {
+        _uiCameraHandle = UICameraView(CGRect(x: 0.0, y: 0.0, width: 0.0, height: 0.0), viewID: 0, args: nil)
+    }
+    
+    public func create(withFrame frame: CGRect, viewIdentifier viewId: Int64, arguments args: Any?) -> FlutterPlatformView {
+        _uiCameraHandle = UICameraView(frame, viewID: viewId, args: args)
+        return _uiCameraHandle
+    }
+}
+
+class UICameraView: NSObject, FlutterPlatformView {
+    let frame: CGRect
+    let viewId: Int64
+    
+    lazy public var _customCamera: CustomCameraView = {
+        let camera = CustomCameraView(frame: self.frame)
+        return camera
+    }()
+    
+    init(_ frame: CGRect, viewID: Int64, args: Any?) {
+        self.viewId = viewID
+        self.frame = frame
+    }
+    
+    func view() -> UIView {
+        return _customCamera
+    }
+}
+
+class CustomCameraView: UIView {
+    
+    public var imageData: [Data] = [Data]()
+    
+    var cameraConnection: CameraHandle = CameraHandle()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        configureConfiguration()
+    }
+    
+    func takePicture(completion: @escaping(Data?, Error?) -> Void) {
+        self.cameraConnection.captureImage {
+            (image, Error) in
+            guard let _image = image else {
+                print(Error ?? "Error in Camera capture")
+                return
+            }
+            
+            self.imageData.append(UIImagePNGRepresentation(_image)!)
+            
+            return
+        }
+    }
+    
+    func configureConfiguration(){
+        switch AVCaptureDevice.authorizationStatus(for: .video) {
+        case .authorized:
+            cameraConnection.prepare{(error) in
+                if let error = error {
+                    print(error)
+                }
+                try? self.cameraConnection.displayPreview(on: self)
+            }
+            break
+        case .notDetermined:
+            cameraConnection.sessionQueue.suspend()
+            AVCaptureDevice.requestAccess(for: .video, completionHandler: {granted in
+                if !granted {
+                    
+                }
+            })
+        default:
+            cameraConnection.sessionQueue.suspend()
+            AVCaptureDevice.requestAccess(for: .video, completionHandler: {granted in
+                if !granted {
+                    
+                }
+            })
+        }
+    }
+    
+    func cleanUp(){
+        self.cameraConnection.closeSession()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
 class CameraHandle: NSObject {
     
     var captureSession: AVCaptureSession?
@@ -48,8 +142,8 @@ class CameraHandle: NSObject {
             
             let session = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera, .builtInTelephotoCamera], mediaType: AVMediaType.video, position: .unspecified)
             let cameras = (session.devices.compactMap{$0})
-            guard !cameras.isEmpty else {throw CameraAccessError.noCamerasAvailable}
             
+            guard !cameras.isEmpty else {throw CameraAccessError.noCamerasAvailable}
             for camera in cameras {
                 switch (camera.position) {
                 case .front:

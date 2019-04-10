@@ -31,17 +31,40 @@ class UIMapView: NSObject, FlutterPlatformView {
     }
 }
 
-class CustomMapView: MKMapView, CLLocationManagerDelegate {
-    var iosMapView: MKMapView!
+class CustomMapView: MKMapView, CLLocationManagerDelegate, MKMapViewDelegate {
+//    var iosMapView: MKMapView!
     let locationManager: CLLocationManager! = CLLocationManager()
     var currentUserLocation: CLLocationCoordinate2D = CLLocationCoordinate2D()
     
+    var currentLocation: CLLocation?
+    
+    var _mkMapViewCamera: MKMapCamera?
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.locationManager.requestAlwaysAuthorization()
+        locationManager.requestAlwaysAuthorization()
+        locationManager.delegate = self
+//        iosMapView.delegate = self
+        
         self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
         self.locationManager.startUpdatingLocation()
-        self.iosMapView?.centerCoordinate = currentUserLocation
+        
+//        currentUserLocation = locationManager.location!.coordinate
+        
+//        guard let _mapView = self.iosMapView else {
+//            return
+//        }
+//
+//        self.iosMapView.showsCompass = true
+//        self.iosMapView.showsUserLocation = true
+//        self.iosMapView.showsPointsOfInterest = false
+//        self.iosMapView.showsTraffic = false
+        
+//        self._mkMapViewCamera = MKMapCamera.init(lookingAtCenter: currentUserLocation, fromDistance: 10.0, pitch: 10.0, heading: 90.0)
+//        self.iosMapView.camera = _mkMapViewCamera!
+        print("\(currentUserLocation)")
+        
+//        self.iosMapView?.centerCoordinate = currentUserLocation
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -50,28 +73,42 @@ class CustomMapView: MKMapView, CLLocationManagerDelegate {
 }
 
 extension CustomMapView {
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        currentUserLocation = locations.last!.coordinate
-        self.iosMapView.camera.centerCoordinate = currentUserLocation
-        self.iosMapView.setCamera(MKMapCamera(lookingAtCenter: currentUserLocation, fromDistance: 10.0, pitch: 10.0, heading: 90.0), animated: true)
-        self.locationManager.stopUpdatingLocation()
-    }
+//    func mapViewWillStartLoadingMap(_ mapView: MKMapView) {
+//        <#code#>
+//    }
+//    func mapViewWillStartLocatingUser(_ mapView: MKMapView) {
+//        
+//    }
+}
+
+extension CustomMapView {
+//    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+//        currentUserLocation = locations.last!.coordinate
+//        print("currentLocation: \(currentLocation)\n currentUserLocation: \(currentUserLocation)")
+////        self.iosMapView.camera.centerCoordinate = locations.last!.coordinate
+////        self.iosMapView.setCamera(MKMapCamera(lookingAtCenter: currentUserLocation, fromDistance: 10.0, pitch: 10.0, heading: 90.0), animated: true)
+//        self.locationManager.stopUpdatingLocation()
+//    }
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         switch status {
         case .notDetermined:
             manager.requestLocation()
+//            iosMapView.showsUserLocation = true
             break
         case .restricted:
             manager.stopUpdatingLocation()
             manager.requestWhenInUseAuthorization()
+//            iosMapView.showsUserLocation = false
             break
         case .denied:
             manager.stopUpdatingLocation()
             manager.requestWhenInUseAuthorization()
+//            iosMapView.showsUserLocation = false
             break
         default:
             manager.startUpdatingLocation()
+//            iosMapView.showsUserLocation = true
             break
         }
     }
