@@ -21,21 +21,26 @@ class _AuthState extends State<AuthentificationView> {
         child: new Column(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[
           Text("No need to sign up just press Sign In"),
           new CupertinoButton(
-              child: new Text("Login"),
-              onPressed: () {authUser(context);}),
+              child: new Text("Sign In"),
+              onPressed: () {
+                getPlatformAuth();
+                checkPlatformAuth();
+                Stream<bool> hasAuth = new Stream.fromFuture(authenticate());
+                hasAuth.listen( (onData){
+                  print("listened Data: $onData");
+                  return Navigator.pop(context);
+                  }, onDone: (){ print("Signed In status: $signIn");
+                  Navigator.pop(context);
+                  }, 
+                  onError: (error){
+                    print("Fired error");
+                  }
+    );
+          }),
           new CupertinoButton(
-              child: new Text("Terms of Service")),
+              child: new Text("Terms of Service"), onPressed: (){},),
       ]))
     ));
-  }
-
-  Widget authUser(BuildContext context) {
-    getPlatformAuth();
-    checkPlatformAuth();
-    authenticate();
-    if (signIn){
-      Navigator.pop(context);
-    }
   }
 
   Future<void> getPlatformAuth() async {
@@ -62,7 +67,7 @@ class _AuthState extends State<AuthentificationView> {
     });
   }
 
-  Future<void> authenticate() async {
+  Future<bool> authenticate() async {
     bool authenticated = false;
     try {
       authenticated = await _authentication.authenticateWithBiometrics(
@@ -70,12 +75,17 @@ class _AuthState extends State<AuthentificationView> {
           useErrorDialogs: true,
           stickyAuth: true);
       final Map<String, bool> status = await authChannel.invokeMapMethod('register', <String, dynamic>{"authUser" : true});
-      print("${status.keys} | ${status.values}");
+      print("key status: ${status.keys} | ${status.values.first}");
+      setState(() {
+        signIn = status.values.first;
+      });
+      return signIn;
     } on PlatformException catch (e) {
       print("${e.message}");
     }
-    setState(() async {
-      signIn = authenticated ? true : false;
-    });
+    // setState(() {
+    //   signIn = authenticated ? true : false;
+    // });
+    return signIn;
   }
 }

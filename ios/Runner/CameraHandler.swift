@@ -44,7 +44,7 @@ class UICameraView: NSObject, FlutterPlatformView {
 
 class CustomCameraView: UIView {
     
-    public var imageData: [Data] = [Data]()
+    public var imageData: Data = Data()
     
     var cameraConnection: CameraHandle = CameraHandle()
     
@@ -60,8 +60,7 @@ class CustomCameraView: UIView {
                 print(Error ?? "Error in Camera capture")
                 return
             }
-            
-            self.imageData.append(UIImagePNGRepresentation(_image)!)
+            self.imageData = UIImagePNGRepresentation(_image)!
             
             return
         }

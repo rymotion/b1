@@ -32,11 +32,10 @@ class UIMapView: NSObject, FlutterPlatformView {
 }
 
 class CustomMapView: MKMapView, CLLocationManagerDelegate, MKMapViewDelegate {
-//    var iosMapView: MKMapView!
     let locationManager: CLLocationManager! = CLLocationManager()
     var currentUserLocation: CLLocationCoordinate2D = CLLocationCoordinate2D()
     
-    var currentLocation: CLLocation?
+    var _currentLocation: CLLocation?
     
     var _mkMapViewCamera: MKMapCamera?
     
@@ -44,27 +43,25 @@ class CustomMapView: MKMapView, CLLocationManagerDelegate, MKMapViewDelegate {
         super.init(frame: frame)
         locationManager.requestAlwaysAuthorization()
         locationManager.delegate = self
-//        iosMapView.delegate = self
+        
+        
         
         self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
         self.locationManager.startUpdatingLocation()
         
-//        currentUserLocation = locationManager.location!.coordinate
+        self.currentUserLocation = locationManager.location!.coordinate
         
-//        guard let _mapView = self.iosMapView else {
-//            return
-//        }
-//
-//        self.iosMapView.showsCompass = true
-//        self.iosMapView.showsUserLocation = true
-//        self.iosMapView.showsPointsOfInterest = false
-//        self.iosMapView.showsTraffic = false
+
+        self.showsCompass = true
+        self.showsUserLocation = true
+        self.showsPointsOfInterest = false
+        self.showsTraffic = false
         
-//        self._mkMapViewCamera = MKMapCamera.init(lookingAtCenter: currentUserLocation, fromDistance: 10.0, pitch: 10.0, heading: 90.0)
-//        self.iosMapView.camera = _mkMapViewCamera!
+        self._mkMapViewCamera = MKMapCamera.init(lookingAtCenter: currentUserLocation, fromDistance: 10.0, pitch: 10.0, heading: 90.0)
+        self.camera = _mkMapViewCamera!
         print("\(currentUserLocation)")
         
-//        self.iosMapView?.centerCoordinate = currentUserLocation
+        self.centerCoordinate = currentUserLocation
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -82,33 +79,33 @@ extension CustomMapView {
 }
 
 extension CustomMapView {
-//    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-//        currentUserLocation = locations.last!.coordinate
-//        print("currentLocation: \(currentLocation)\n currentUserLocation: \(currentUserLocation)")
-////        self.iosMapView.camera.centerCoordinate = locations.last!.coordinate
-////        self.iosMapView.setCamera(MKMapCamera(lookingAtCenter: currentUserLocation, fromDistance: 10.0, pitch: 10.0, heading: 90.0), animated: true)
-//        self.locationManager.stopUpdatingLocation()
-//    }
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        currentUserLocation = locations.last!.coordinate
+        print("currentLocation: \(_currentLocation)\n currentUserLocation: \(currentUserLocation)")
+        self.camera.centerCoordinate = locations.last!.coordinate
+        self.setCamera(MKMapCamera(lookingAtCenter: currentUserLocation, fromDistance: 10.0, pitch: 10.0, heading: 90.0), animated: true)
+        self.locationManager.stopUpdatingLocation()
+    }
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         switch status {
         case .notDetermined:
             manager.requestLocation()
-//            iosMapView.showsUserLocation = true
+            self.showsUserLocation = true
             break
         case .restricted:
             manager.stopUpdatingLocation()
             manager.requestWhenInUseAuthorization()
-//            iosMapView.showsUserLocation = false
+            self.showsUserLocation = false
             break
         case .denied:
             manager.stopUpdatingLocation()
             manager.requestWhenInUseAuthorization()
-//            iosMapView.showsUserLocation = false
+            self.showsUserLocation = false
             break
         default:
             manager.startUpdatingLocation()
-//            iosMapView.showsUserLocation = true
+            self.showsUserLocation = true
             break
         }
     }

@@ -34,16 +34,17 @@ import Flutter
                 print(data ?? "No Data")
                 print(error ?? "NoError")
             }
+            
+            result(cameraViewFactory._uiCameraHandle._customCamera.imageData)
             break
         default:
             break
         }
-        
         print(cameraViewFactory._uiCameraHandle._customCamera.imageData.description)
         print(cameraViewFactory._uiCameraHandle._customCamera.imageData.count)
     })
     
-    authChannel.sendMessage(userdefaults){(reply: Bool) -> Void in reply = userdefaults}
+    authChannel.sendMessage(userdefaults)
     
     registerChannel.setMethodCallHandler({(call: FlutterMethodCall, result: FlutterResult) -> Void in
         switch(call.method){

@@ -24,6 +24,9 @@ const channel = BasicMessageChannel("checkAuth", StandardMessageCodec());
 class _MyHomePageState extends State<MyHomePage> {
   Future<bool> loggedIn() async {
     final bool reply = await channel.send("wasAuth");
+    channel.setMessageHandler((handler) async {
+      print(handler as bool);
+    });
     return reply;
   }
 
@@ -33,7 +36,7 @@ class _MyHomePageState extends State<MyHomePage> {
     hasAuth.listen( (onData) {
           switch (onData) {
             case true:
-              print(true);
+              return;
               break;
             default:
               showCupertinoDialog(
@@ -114,13 +117,4 @@ class _MyHomePageState extends State<MyHomePage> {
       )), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
-  /**
-   * CupertinoButton(
-            onPressed: () => Navigator.push(
-                context,
-                new CupertinoPageRoute(
-                    builder: (_) => auth.AuthentificationView())),
-            child: new Text("Login"),
-          )
-   */
 }
