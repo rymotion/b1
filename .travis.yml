@@ -1,0 +1,19 @@
+language: dart
+sudo: required
+dist: trusty
+dart:
+    - stable
+    - dev
+addons:
+    apt:
+      packages:
+        - lib32stdc++6
+install:
+    - git clone https://github.com/flutter/flutter.git -b dev
+    - ./flutter/bin/flutter doctor
+    - gem install coveralls-lcov
+script:
+    - ./flutter/bin/flutter test --coverage
+cache:
+    directories:
+        - $HOME/.pub-cache

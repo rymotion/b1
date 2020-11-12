@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
-import 'package:blockchain/pages/login.dart' as auth;
-import 'package:blockchain/pages/createListing.dart' as camera;
+import 'package:blockchain/pages/login/view/login.dart';
+import 'package:blockchain/pages/create_listing/view/create_listing.dart';
 import 'dart:async';
 import 'package:flutter/services.dart';
 
@@ -47,7 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       content: new Text("Let's get you signed up and logged in."),
                       actions: <Widget>[
                         CupertinoButton( onPressed: () {
-                              Navigator.push(context, new CupertinoPageRoute(builder: (_) => auth.AuthentificationView()));
+                              Navigator.push(context, new CupertinoPageRoute(builder: (_) => AuthentificationView()));
                         },
                         child: new Text("Login"))
                       ],
@@ -97,7 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   onPressed: () {
                     Navigator.push( context,
-                        new CupertinoPageRoute(builder: (_) => camera.CreateListingView()));
+                        new CupertinoPageRoute(builder: (_) => CreateListingView()));
                   },
                 ),
                 CupertinoButton(
