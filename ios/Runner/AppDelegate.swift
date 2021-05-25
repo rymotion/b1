@@ -1,5 +1,6 @@
 import UIKit
 import Flutter
+import Firebase
 
 @UIApplicationMain
 
@@ -10,21 +11,22 @@ import Flutter
     let mapViewFactory = MapViewFactory()
     let cameraViewFactory = CameraViewFactory()
     
-    
-    guard let controller: FlutterViewController = window?.rootViewController as? FlutterViewController else {
+	FirebaseApp.configure()
+	
+	guard let controller: FlutterViewController = window?.rootViewController as? FlutterViewController, let mapRunner: FlutterPluginRegistrar = registrar(forPlugin: "Runner"), let cameraRunner: FlutterPluginRegistrar =  registrar(forPlugin: "camera") else {
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
     
-    registrar(forPlugin: "Runner").register(mapViewFactory, withId: "UIMapView")
-    registrar(forPlugin: "camera").register(cameraViewFactory, withId: "UICameraView")
+	mapRunner.register(mapViewFactory, withId: "UIMapView")
+	cameraRunner.register(cameraViewFactory, withId: "UICameraView")
     
     let userdefaults = UserDefaults.standard.bool(forKey: "authUser")
     
-    let authChannel = FlutterBasicMessageChannel(name: "checkAuth", binaryMessenger: controller, codec: FlutterStandardMessageCodec.sharedInstance())
+	let authChannel = FlutterBasicMessageChannel(name: "checkAuth", binaryMessenger: controller as! FlutterBinaryMessenger, codec: FlutterStandardMessageCodec.sharedInstance())
     
-    let registerChannel = FlutterMethodChannel(name: "com.b1.blockchain/register", binaryMessenger: controller)
+	let registerChannel = FlutterMethodChannel(name: "com.b1.blockchain/register", binaryMessenger: controller as! FlutterBinaryMessenger)
     
-    let cameraChannel = FlutterMethodChannel(name: "com.b1.blockchain/camera", binaryMessenger: controller)
+	let cameraChannel = FlutterMethodChannel(name: "com.b1.blockchain/camera", binaryMessenger: controller as! FlutterBinaryMessenger)
     
     cameraChannel.setMethodCallHandler({(call: FlutterMethodCall, result: FlutterResult) -> Void in
         switch(call.method){

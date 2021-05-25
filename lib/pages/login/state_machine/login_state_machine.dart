@@ -89,3 +89,27 @@ class _AuthState extends State<AuthentificationView> {
     return signIn;
   }
 }
+
+/// TODO(rpaglinawan) create entrypoint for login workflow
+/**
+ * entrypoint(biometric sign in/ sign up)
+ * sign-up path -> sign-up successful state / sign-up unsuccessful state
+ * sign-in successful state
+ * sign-in unsuccessful state
+ */
+
+class LoginRoutes {
+  static const entrypoint = 'login-entrypoint';
+
+  static const signUp = 'sign-up-entrypoint';
+
+  static const signUp_success = 'sign-up-success';
+
+  static const signUp_fail = 'sign-up-fail';
+
+  static const signIn = 'sign-in-entrypoint';
+
+  static const signIn_success = 'sign-in-success';
+
+  static const signIn_fail = 'sign-in-fail';
+}

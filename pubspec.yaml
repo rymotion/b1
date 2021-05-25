@@ -10,6 +10,8 @@ dependencies:
     sdk: flutter
   local_auth: ^0.4.0+1
   cupertino_icons: ^0.1.2
+  firebase:
+  firebase_analytics:
 
 flutter_icon:
   android: true

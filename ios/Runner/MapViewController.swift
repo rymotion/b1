@@ -44,7 +44,7 @@ class CustomMapView: MKMapView, CLLocationManagerDelegate, MKMapViewDelegate {
         locationManager.requestAlwaysAuthorization()
         locationManager.delegate = self
         
-        
+        // TODO(rpaglinawan): add a guard and fail safe on first load
         
         self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
         self.locationManager.startUpdatingLocation()
